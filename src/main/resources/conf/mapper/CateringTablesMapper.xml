@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.yuanlai.wpnos.ylcmsb.dao.CateringTablesDao">
+    <resultMap id="BaseResultMap" type="com.yuanlai.wpnos.ylcmsb.entity.CateringTable">
+        <id column="table_id"  property="tableId"/>
+        <result column="table_num"  property="tableNum"/>
+        <result column="table_name"  property="tableName"/>
+        <result column="store_id"  property="storeId"/>
+        <result column="ticket"  property="ticket"/>
+        <result column="url"  property="url"/>
+        <result column="redirect_url"  property="redirectUrl"/>
+        <result column="open_status"  property="openStatus"/>
+        <result column="create_time"  property="createTime"/>
+        <result column="create_user"  property="createUser"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        table_id, table_num, table_name, store_id, ticket, url, redirect_url, openStatus, create_time, create_user
+    </sql>
+    <select id="countList" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM catering_table
+    </select>
+
+    <select id="listTables" parameterType="java.util.Map" resultType="java.util.Map">
+        select table_id tableId,
+        table_num tableNum,
+        table_name tableName,
+        store_name storeName,
+        catering_table.store_id storeId,
+        ticket, url, redirect_url redirectUrl,
+        open_status openStatus,
+        catering_table.create_time createTime,
+        create_user createUser
+        from catering_table LEFT JOIN catering_store ON catering_table.store_id=catering_store.store_id
+        <where>
+            <if test="tableName != null and tableName != '' ">
+                AND TABLE_NAME = #{tableName}
+            </if>
+            <if test="tableNum != null and tableNum != '' ">
+                AND table_num = #{tableNum}
+            </if>
+            <if test="storeName != null and tableName != '' ">
+                AND store_name = #{storeName}
+            </if>
+        </where>
+    </select>
+    <select id="listAccount" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT table_num tableNum,
+        dish_name dishName,
+        price,
+        count(dish_name) orderNum,
+        discount_price discountPrice,
+        amount
+        FROM catering_sub_order cso LEFT JOIN catering_order co ON co.order_no = cso.order_no
+        <where>
+            <if test="storeId != null and storeId != '' ">
+                AND store_id = #{storeId}
+            </if>
+            <if test="tableNum != null and tableNum != '' ">
+                AND table_num = #{tableNumber}
+            </if>
+        </where>
+        and pay_status = '00' GROUP BY dish_name
+    </select>
+
+    <insert id="addTables" parameterType="com.yuanlai.wpnos.ylcmsb.entity.CateringTable" >
+        INSERT INTO catering_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tableId != null">
+                table_id,
+            </if>
+            <if test="tableNum != null">
+                table_num,
+            </if>
+            <if test="tableName != null">
+                table_name,
+            </if>
+            <if test="storeId != null">
+                store_id,
+            </if>
+            <if test="ticket != null">
+                ticket,
+            </if>
+            <if test="url != null">
+                url,
+            </if>
+            <if test="redirectUrl != null">
+                redirect_url,
+            </if>
+            <if test="openStatus != null">
+                open_status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tableId != null">
+                #{tableId,jdbcType=VARCHAR},
+            </if>
+            <if test="tableNum != null">
+                #{tableNum,jdbcType=VARCHAR},
+            </if>
+            <if test="tableName != null">
+                #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="ticket != null">
+                #{ticket,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="redirectUrl != null">
+                #{redirectUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="openStatus != null">
+                #{openStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=VARCHAR},
+            </if>
+
+        </trim>
+
+    </insert>
+
+    <select id="dictStores" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+        store_id storeId,
+        store_name storeName
+        FROM
+        catering_store
+    </select>
+
+    <update id="updateTable" parameterType="com.yuanlai.wpnos.ylcmsb.entity.CateringTable">
+        UPDATE catering_table
+        <set>
+            <if test="tableNum != null">
+                table_num = #{tableNum,jdbcType=VARCHAR},
+            </if>
+            <if test="tableName != null">
+                table_name = #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="storeId != null">
+                store_id = #{storeId,jdbcType=VARCHAR},
+            </if>
+            <if test="ticket != null">
+                ticket =  #{ticket,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="redirectUrl != null">
+                redirect_url = #{redirectUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="openStatus != null">
+                open_status = #{openStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE table_id = #{tableId,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="deleteTables" parameterType="java.util.List">
+        DELETE FROM catering_table
+        <where>
+            table_id IN
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </delete>
+
+</mapper>

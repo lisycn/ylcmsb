@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <properties resource="jdbc.properties" />
+
+    <!--
+        数据库驱动jar 在pom文件默认指定了lib\mysql-connector-java-5.1.38.jar
+        如果需要使用其他目录，自行替换本地路径
+    -->
+    <!--<classPathEntry location="${generator.classpath}" />-->
+
+    <context id="MysqlContext" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+        <!--去除注释  -->
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+
+        <!--数据库连接 -->
+        <jdbcConnection driverClass="${jdbc_driverClassName}"
+                        connectionURL="${jdbc_url}"
+                        userId="${jdbc_username}"
+                        password="${jdbc_password}">
+        </jdbcConnection>
+
+        <!--默认false
+           Java type resolver will always use java.math.BigDecimal if the database column is of type DECIMAL or NUMERIC.
+         -->
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!--生成实体类 指定包名 以及生成的地址 （可以自定义地址，但是路径不存在不会自动创建  使用Maven生成在target目录下，会自动创建） -->
+        <javaModelGenerator targetPackage="com.yuanlai.wpnos.ylcmsb.entity" targetProject="ylcmsb">
+            <property name="enableSubPackages" value="false" />
+            <property name="trimSt0rings" value="true" />
+        </javaModelGenerator>
+
+        <!--生成SQLMAP文件 -->
+        <sqlMapGenerator targetPackage="conf.mapper"  targetProject="ylcmsb">
+            <property name="enableSubPackages" value="false" />
+        </sqlMapGenerator>
+
+        <!--生成Dao文件 可以配置 type="XMLMAPPER"生成xml的dao实现  context id="DB2Tables" 修改targetRuntime="MyBatis3"  -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.yuanlai.wpnos.ylcmsb.dao"  targetProject="ylcmsb">
+            <property name="enableSubPackages" value="false" />
+        </javaClientGenerator>
+
+        <!--对应数据库表 mysql可以加入主键自增 字段命名 忽略某字段等，自增-->
+        <!-- <table tableName="user">
+             <generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>
+         </table>-->
+
+        <!---->
+        <table tableName="catering_table" domainObjectName="CateringTable" >
+        </table>
+
+    </context>
+</generatorConfiguration>
